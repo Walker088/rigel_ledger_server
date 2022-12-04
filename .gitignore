@@ -1,3 +1,6 @@
+.project.env
+logs/*.log
+
 # Binaries for programs and plugins
 *.exe
 *.exe~
