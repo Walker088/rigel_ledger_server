@@ -1,5 +1,17 @@
-.project.env
+.env.development
 logs/*.log
+
+# Sveltekit ignores
+.DS_Store
+node_modules
+/build
+/.svelte-kit
+/package
+.env
+.env.*
+!.env.example
+vite.config.js.timestamp-*
+vite.config.ts.timestamp-*
 
 # Binaries for programs and plugins
 *.exe
@@ -16,3 +28,4 @@ logs/*.log
 
 # Dependency directories (remove the comment below to include it)
 # vendor/
+

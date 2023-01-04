@@ -30,7 +30,7 @@
     # - DB_NAME=rigel_ledger
     # - DB_USER=postgres
     # - DB_PW=
-    $ touch .project.env
+    $ touch .env.development
     $ bash shell/migrate.sh info
     ```
 

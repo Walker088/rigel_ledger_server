@@ -11,9 +11,9 @@ import (
 )
 
 func init() {
-	err := godotenv.Load(".project.env")
+	err := godotenv.Load(".env.development")
 	if err != nil {
-		log.Fatal("Error loading .project.env file")
+		log.Fatal("Error loading .env.development file")
 	}
 }
 

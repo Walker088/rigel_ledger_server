@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 set -a
-[ -f .project.env ] && . .project.env
+[ -f .env.development ] && . .env.development
 set +a
 
 flywayBaseline() {
@@ -40,4 +40,4 @@ elif [[ $1 == migrate ]]; then
 fi
 
 # Clean the env variables
-unset $(grep -v '^#' .project.env | sed -E 's/(.*)=.*/\1/' | xargs)
+unset $(grep -v '^#' .env.development | sed -E 's/(.*)=.*/\1/' | xargs)
