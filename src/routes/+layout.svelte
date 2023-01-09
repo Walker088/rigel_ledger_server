@@ -5,6 +5,6 @@
 </script>
 
 
-<main>
+<main class="container-fluid p-2">
 	<slot></slot>
 </main>

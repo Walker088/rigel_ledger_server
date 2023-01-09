@@ -1,0 +1,10 @@
+$desktop-break: 1920px; // 4k and hi-res desktop
+$laptop-break: 1024px; // 1080 and hi-res laptops
+$tablet-break: 768px; // hi-res tablets and low-res laptops
+$mobile-break: 360px; // mobile and low-res tablets
+
+@mixin base($query) {
+    @media ( min-width: $query ) {
+        @content;
+    }
+}
