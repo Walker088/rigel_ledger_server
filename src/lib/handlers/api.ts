@@ -10,7 +10,6 @@ const send = async (options: RequestInit, path: string, token?: string) => {
     if (token) {
         options.headers = [...h, ['Authorization', `Bearer ${token}`]];
 	}
-	debugger;
     const res = await fetch(`${backendPath}/${path}`, options);
 	if (res.ok) {
 		const text = await res.text();

@@ -1,4 +1,10 @@
 
 @use "../node_modules/bootstrap/scss/bootstrap";
 
+$base-color-dark-mode: #1C1C1C;
+$text-color-dark-mode: #4DA6FF;
 
+body {
+    background-color: $base-color-dark-mode;
+    color: $text-color-dark-mode;
+}
