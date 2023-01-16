@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS users (
 	main_language   VARCHAR(2),
 	PRIMARY KEY(user_id)
 );
-COMMENT ON COLUMN users.user_type IS '0: Personal, 1: Company';
+COMMENT ON COLUMN users.user_type IS '0: Personal, 1: Company, 2: Pending for approval';
 COMMENT ON COLUMN users.main_country IS 'ISO 3166-1 alphabetic_code_2, e.g, TW as Taiwan';
 COMMENT ON COLUMN users.main_currency IS 'ISO 4217 alphabetic_code_3, e.g, TWD as New Taiwn dollar';
 COMMENT ON COLUMN users.main_language IS 'ISO 639-1 alphabetic_code_2, e.g., ZH as Chinese';

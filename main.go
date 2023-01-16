@@ -21,7 +21,7 @@ func main() {
 	defer pool.GetPool().Close()
 
 	l.Info("Welcome to Rigel Ledger")
-	r := router.New()
+	r := router.New(&c.GithubOAuthConfig, l)
 	srv := &http.Server{
 		Handler:      r,
 		Addr:         fmt.Sprintf("%s:%s", c.AppHost, c.AppPort),

@@ -21,7 +21,7 @@ type AppConfig struct {
 	AppHost string `env:"APP_HOST" envDefault:"localhost"`
 	AppPort string `env:"APP_PORT" envDefault:"8000"`
 
-	GithubOAuth
+	GithubOAuthConfig
 }
 
 type PgConfig struct {
@@ -45,7 +45,7 @@ type LoggerConfig struct {
 	EncoderConfig zapcore.EncoderConfig
 }
 
-type GithubOAuth struct {
+type GithubOAuthConfig struct {
 	OauthGithubClientId     string `env:"OATH_GITHUB_CLIENT_ID"`
 	OauthGithubClientSecret string `env:"OATH_GITHUB_CLIENT_SECRET"`
 }
