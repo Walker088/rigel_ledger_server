@@ -1,8 +1,11 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"net/http"
+	"os"
+	"os/signal"
 	"time"
 
 	"github.com/Walker088/rigel_ledger_server/backend/config"
@@ -20,13 +23,25 @@ func main() {
 	pool.StartPool()
 	defer pool.GetPool().Close()
 
-	l.Info("Welcome to Rigel Ledger")
-	r := router.New(&c.GithubOAuthConfig, l)
+	l.Info("Welcome to RigelLedger")
+	m := router.New(c, l)
 	srv := &http.Server{
-		Handler:      r,
+		Handler:      m.Router,
 		Addr:         fmt.Sprintf("%s:%s", c.AppHost, c.AppPort),
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,
 	}
-	l.Fatal(srv.ListenAndServe())
+	go func() {
+		l.Error(srv.ListenAndServe())
+	}()
+
+	deadlineChannel := make(chan os.Signal, 1)
+	signal.Notify(deadlineChannel, os.Interrupt)
+	<-deadlineChannel
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	srv.Shutdown(ctx)
+	l.Info("Shutting down RigelLedger REST Server")
+	os.Exit(0)
 }

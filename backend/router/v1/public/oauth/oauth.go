@@ -11,7 +11,4 @@ type OAuthProp struct {
 	ClientSecret string
 	AuthURL      string
 	TokenURL     string
-
-	RedirectURL string
-	Scopes      []string
 }

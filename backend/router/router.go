@@ -1,41 +1,77 @@
 package router
 
 import (
-	"encoding/json"
 	"net/http"
 
-	"github.com/gorilla/mux"
+	"github.com/go-chi/chi/v5"
+	chimdw "github.com/go-chi/chi/v5/middleware"
 	"go.uber.org/zap"
 
 	"github.com/Walker088/rigel_ledger_server/backend/config"
+	custommdw "github.com/Walker088/rigel_ledger_server/backend/router/middlewares"
+	"github.com/Walker088/rigel_ledger_server/backend/router/v1/protect"
+	"github.com/Walker088/rigel_ledger_server/backend/router/v1/public"
 	"github.com/Walker088/rigel_ledger_server/backend/router/v1/public/oauth"
 )
 
-type home struct {
-	ApiVersion  string `json:"apiVersion"`
-	ChangeLogMd string `json:"changeLogMd"`
+type Mux struct {
+	Router *chi.Mux
+	logger *zap.SugaredLogger
 }
 
-func HomeHandler(w http.ResponseWriter, r *http.Request) {
-	h := home{
-		ApiVersion:  "0.0.1",
-		ChangeLogMd: "Implementing",
+func (m *Mux) initRoutes(c *config.AppConfig) {
+	var auth = oauth.New(c.OauthGithubClientId, c.OauthGithubClientSecret, m.logger)
+	m.Router.Route("/v1/public", func(r chi.Router) {
+		r.Get("/changelog", public.ChangeLogHandler)
+
+		r.Route("/oauth/github", func(r chi.Router) {
+			r.Get("/login", auth.LoginHandler)
+			r.Get("/callback", auth.CallbackHandler)
+		})
+	})
+	m.Router.Route("/v1/protect", func(r chi.Router) {
+		r.Get("/{userId}", protect.UserHomeHandler)
+	})
+}
+
+func (m *Mux) getChiRouteMethods() []string {
+	allowMethods := make(map[string]struct{})
+	walkFunc := func(method string, route string, handler http.Handler, middlewares ...func(http.Handler) http.Handler) error {
+		allowMethods[method] = struct{}{}
+		return nil
 	}
-	response, _ := json.Marshal(h)
+	if err := chi.Walk(m.Router, walkFunc); err != nil {
+		m.logger.Errorf("Logging err: %s", err.Error())
+	}
 
-	w.Header().Set("Content-Type", "application/json")
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.WriteHeader(http.StatusOK)
-	w.Write(response)
+	if _, ok := allowMethods[http.MethodOptions]; ok {
+		methods := make([]string, 0, len(allowMethods))
+		for method := range allowMethods {
+			methods = append(methods, method)
+		}
+		return methods
+	}
+	return nil
 }
 
-func New(c *config.GithubOAuthConfig, logger *zap.SugaredLogger) *mux.Router {
-	var auth = oauth.New(c.OauthGithubClientId, c.OauthGithubClientSecret, logger)
+func New(c *config.AppConfig, logger *zap.SugaredLogger) *Mux {
+	compressor := chimdw.NewCompressor(4)
 
-	r := mux.NewRouter()
-	r.HandleFunc("/", HomeHandler)
+	r := chi.NewRouter()
+	mw := custommdw.New(logger)
+	r.Use(chimdw.RealIP)
+	r.Use(mw.AccessLog)
+	r.Use(compressor.Handler)
+	r.Use(mw.DefaultRestHeaders)
+	r.Use(chimdw.Recoverer)
 
-	r.HandleFunc("/oauth/github/login", auth.LoginHandler)
-	r.HandleFunc("/oauth/github/callback", auth.CallbackHandler)
-	return r
+	m := &Mux{
+		Router: r,
+		logger: logger,
+	}
+	m.initRoutes(c)
+	mw.AllowMethods = m.getChiRouteMethods()
+
+	m.logger.Info("Chi Mux Initialized")
+	return m
 }
