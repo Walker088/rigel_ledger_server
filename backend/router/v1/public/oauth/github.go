@@ -44,7 +44,7 @@ func (g *GithubOAuth) LoginHandler(w http.ResponseWriter, r *http.Request) {
 		"%s?client_id=%s&redirect_uri=%s&scope=%s",
 		g.AuthURL,
 		g.ClientID,
-		"http://localhost:8000/login/github/callback",
+		"http://localhost:8000/v1/public/oauth/github/callback",
 		"user:email",
 	)
 	http.Redirect(w, r, redirectURL, http.StatusMovedPermanently)

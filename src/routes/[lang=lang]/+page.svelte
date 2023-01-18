@@ -6,7 +6,6 @@
 	import { faGithub } from "@fortawesome/free-brands-svg-icons"
 	import { BreakPoints as bp } from "$lib/styles/responsive"
 
-	export const prerender = true;
 	export let data: PageData;
 
 </script>
@@ -20,11 +19,13 @@
 <div class="grid-container">
 	<section class="grid-item__login">
 		<h1>{ $LL.title() }</h1>
-		<h4 class="fs-6 fw-light">{ $LL.subTitle() }</h4>
-		<div class="d-inline-flex badge bg-secondary mt-4 fs-5">
-			<Fa color="lightgrey" icon={faGithub} class="me-1"/>
-			<span class="text-wrap"> Sign In with Github</span>
-		</div>
+		<h4 class="fs-6 fw-light mb-4">{ $LL.subTitle() }</h4>
+		<button class="btn p-0" on:click={() => {window.open("http://localhost:8000/v1/public/oauth/github/login")}}>
+			<div class="d-inline-flex badge bg-secondary fs-5">
+				<Fa color="lightgrey" icon={faGithub} class="me-1"/>
+				<span class="text-wrap"> Sign In with Github</span>
+			</div>
+		</button>
 	</section>
 	<section class="grid-item__photo">
 		<picture>

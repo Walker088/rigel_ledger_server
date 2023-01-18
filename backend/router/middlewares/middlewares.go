@@ -45,7 +45,7 @@ func (m *MiddleWares) DefaultRestHeaders(next http.Handler) http.Handler {
 		}
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.Header().Set("Content-Type", "application/json")
-		w.Header().Set("Content-Encoding", "gzip")
+		//w.Header().Set("Content-Encoding", "gzip")
 		w.Header().Set("Date", time.Now().Format(time.RFC1123))
 		next.ServeHTTP(w, r)
 	})

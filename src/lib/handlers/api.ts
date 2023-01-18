@@ -8,15 +8,24 @@ const backendPath = import.meta.env.VITE_BACKEND_URL;
 const send = async (options: RequestInit, path: string, token?: string) => {
     const h = new Headers(options.headers);
     if (token) {
-        options.headers = [...h, ['Authorization', `Bearer ${token}`]];
+        options.headers = [...h, 
+			["Authorization", `Bearer ${token}`],
+			["Accept", "application/json"],
+			["Accept-Encoding", "gzip"]
+		];
 	}
-    const res = await fetch(`${backendPath}/${path}`, options);
-	if (res.ok) {
-		const text = await res.text();
-		return text ? JSON.parse(text) : {};
-	}
-
-	throw error(res.status);
+    return fetch(`${backendPath}/${path}`, options)
+		.then(async res => {
+			if (res?.ok) {
+				const text = await res.text();
+				return text ? JSON.parse(text) : {};
+			}
+		
+			throw error(res.status);
+		})
+		.catch(e => {
+			console.log(e);
+		});
 };
 
 export const get = (path: string, headers?: HeadersInit, token?: string) => {

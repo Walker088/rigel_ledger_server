@@ -55,15 +55,15 @@ func (m *Mux) getChiRouteMethods() []string {
 }
 
 func New(c *config.AppConfig, logger *zap.SugaredLogger) *Mux {
-	compressor := chimdw.NewCompressor(4)
+	//compressor := chimdw.NewCompressor(4)
 
 	r := chi.NewRouter()
 	mw := custommdw.New(logger)
 	r.Use(chimdw.RealIP)
-	r.Use(mw.AccessLog)
-	r.Use(compressor.Handler)
+	//r.Use(compressor.Handler)
 	r.Use(mw.DefaultRestHeaders)
 	r.Use(chimdw.Recoverer)
+	r.Use(mw.AccessLog)
 
 	m := &Mux{
 		Router: r,

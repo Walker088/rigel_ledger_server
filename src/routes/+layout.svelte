@@ -8,8 +8,6 @@
     import "bootstrap/dist/js/bootstrap.bundle.min"
     import "../app.scss"
 
-    export const prerender = true
-
     export let data: LayoutData;
     setLocale(data.locale);
 
