@@ -6,7 +6,7 @@ import type { PageServerLoad } from './$types'
 export const prerender = true;
 
 export const load: PageServerLoad<LoginPageInfo> = async () => {
-    const homePageInfo = await http.get(`v1/public/changelog`, [], JwtManager.getToken())
+    const homePageInfo = await http.get(`v1/public/home`, [], JwtManager.getToken())
         .then(d => d as LoginPageInfo);
-    return homePageInfo;
+    return homePageInfo
 };

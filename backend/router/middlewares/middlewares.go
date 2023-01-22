@@ -5,18 +5,19 @@ import (
 	"strings"
 	"time"
 
-	"github.com/go-chi/chi/v5/middleware"
 	"go.uber.org/zap"
 )
 
 type MiddleWares struct {
 	logger       *zap.SugaredLogger
 	AllowMethods []string
+	AllowOrigins []string
 }
 
-func New(logger *zap.SugaredLogger) *MiddleWares {
+func New(logger *zap.SugaredLogger, origins []string) *MiddleWares {
 	return &MiddleWares{
 		logger:       logger,
+		AllowOrigins: origins,
 		AllowMethods: nil,
 	}
 }
@@ -24,14 +25,11 @@ func New(logger *zap.SugaredLogger) *MiddleWares {
 func (m *MiddleWares) AccessLog(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		start := time.Now()
-		ww := middleware.NewWrapResponseWriter(w, r.ProtoMajor)
 		defer func() {
-			m.logger.Infof("[%d] [From: %s] [To: %s] tooks %s [%d bytes written]",
-				ww.Status(),
+			m.logger.Infof("[From: %s] [To: %s] tooks %s",
 				r.RemoteAddr,
 				r.RequestURI,
 				time.Since(start),
-				ww.BytesWritten(),
 			)
 		}()
 		next.ServeHTTP(w, r)
@@ -40,10 +38,15 @@ func (m *MiddleWares) AccessLog(next http.Handler) http.Handler {
 
 func (m *MiddleWares) DefaultRestHeaders(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		rqOrigin := r.Header.Get("Origin")
+		for _, h := range m.AllowOrigins {
+			if h == rqOrigin {
+				w.Header().Set("Access-Control-Allow-Origin", rqOrigin)
+			}
+		}
 		if m.AllowMethods != nil {
 			w.Header().Set("Access-Control-Allow-Methods", strings.Join(m.AllowMethods, ","))
 		}
-		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.Header().Set("Content-Type", "application/json")
 		//w.Header().Set("Content-Encoding", "gzip")
 		w.Header().Set("Date", time.Now().Format(time.RFC1123))

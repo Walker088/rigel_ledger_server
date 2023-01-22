@@ -27,6 +27,18 @@ type RootTranslation = {
 	 * U​s​e​ ​y​o​u​r​ ​R​i​g​e​l​L​e​d​g​e​r​ ​A​c​c​o​u​n​t
 	 */
 	subTitle: string
+	/**
+	 * S​i​g​n​ ​I​n​ ​w​i​t​h​ ​G​i​t​h​u​b
+	 */
+	signinMsgGithub: string
+	/**
+	 * S​i​g​n​ ​I​n​ ​w​i​t​h​ ​G​o​o​g​l​e
+	 */
+	signinMsgGoogle: string
+	/**
+	 * A​p​p​ ​C​h​a​n​g​e​ ​L​o​g​s
+	 */
+	changeLogTitle: string
 }
 
 export type TranslationFunctions = {
@@ -42,6 +54,18 @@ export type TranslationFunctions = {
 	 * Use your RigelLedger Account
 	 */
 	subTitle: () => LocalizedString
+	/**
+	 * Sign In with Github
+	 */
+	signinMsgGithub: () => LocalizedString
+	/**
+	 * Sign In with Google
+	 */
+	signinMsgGoogle: () => LocalizedString
+	/**
+	 * App Change Logs
+	 */
+	changeLogTitle: () => LocalizedString
 }
 
 export type Formatters = {}

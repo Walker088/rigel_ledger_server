@@ -39,15 +39,15 @@ func New(clientId string, clientSecret string, logger *zap.SugaredLogger) *Githu
 	}
 }
 
-func (g *GithubOAuth) LoginHandler(w http.ResponseWriter, r *http.Request) {
-	redirectURL := fmt.Sprintf(
-		"%s?client_id=%s&redirect_uri=%s&scope=%s",
+func (g *GithubOAuth) GetOauthLink(host string) string {
+	return fmt.Sprintf(
+		`%s?client_id=%s&redirect_uri=%s%s&scope=%s`,
 		g.AuthURL,
 		g.ClientID,
-		"http://localhost:8000/v1/public/oauth/github/callback",
+		host,
+		"/v1/public/oauth/github/callback",
 		"user:email",
 	)
-	http.Redirect(w, r, redirectURL, http.StatusMovedPermanently)
 }
 
 func (g *GithubOAuth) CallbackHandler(w http.ResponseWriter, r *http.Request) {

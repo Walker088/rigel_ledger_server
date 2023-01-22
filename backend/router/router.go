@@ -1,6 +1,7 @@
 package router
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
@@ -20,12 +21,14 @@ type Mux struct {
 }
 
 func (m *Mux) initRoutes(c *config.AppConfig) {
+	var completeHost = fmt.Sprintf("http://%s:%s", c.AppHost, c.AppPort)
 	var auth = oauth.New(c.OauthGithubClientId, c.OauthGithubClientSecret, m.logger)
+	var home = public.NewHomeInfo(auth.GetOauthLink(completeHost))
+
 	m.Router.Route("/v1/public", func(r chi.Router) {
-		r.Get("/changelog", public.ChangeLogHandler)
+		r.Get("/home", home.HomeInfoHandler)
 
 		r.Route("/oauth/github", func(r chi.Router) {
-			r.Get("/login", auth.LoginHandler)
 			r.Get("/callback", auth.CallbackHandler)
 		})
 	})
@@ -58,7 +61,7 @@ func New(c *config.AppConfig, logger *zap.SugaredLogger) *Mux {
 	//compressor := chimdw.NewCompressor(4)
 
 	r := chi.NewRouter()
-	mw := custommdw.New(logger)
+	mw := custommdw.New(logger, c.AppAllowOrigins)
 	r.Use(chimdw.RealIP)
 	//r.Use(compressor.Handler)
 	r.Use(mw.DefaultRestHeaders)

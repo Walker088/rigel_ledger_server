@@ -40,9 +40,10 @@
                     bind:value={selectedLang}
                     on:change={switchLang} 
                 >
-                    <option value="en">English</option>
-                    <option value="zh">繁體中文</option>
-                    <option value="es">Castellano</option>
+                    <option value="" selected>...</option>
+                    <option value="en">🇺🇸 English</option>
+                    <option value="zh">🇹🇼 繁體中文</option>
+                    <option value="es">🇵🇾 Castellano</option>
                 </select>
             </div>
         </div>
