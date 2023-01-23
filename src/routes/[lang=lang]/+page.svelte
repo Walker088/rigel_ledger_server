@@ -22,7 +22,7 @@
 		<h1>{ $LL.title() }</h1>
 		<h4 class="fs-6 fw-light mb-4">{ $LL.subTitle() }</h4>
 		{ #if ghOauth }
-		<button type="button" class="btn p-0" on:click={() => {window.open(ghOauth.link)}}>
+		<button type="button" class="btn p-0" on:click={() => {window.location.href = ghOauth.link}}>
 			<div class="d-inline-flex badge bg-secondary fs-5">
 				<Fa color="lightgrey" icon={faGithub} class="me-1"/>
 				<span class="text-wrap"> {$LL.signinMsgGithub()}</span>
@@ -30,7 +30,7 @@
 		</button>
 		{/if}
 		{ #if ggOauth }
-		<button type="button" class="btn p-0" on:click={() => {window.open(ggOauth.link)}}>
+		<button type="button" class="btn p-0" on:click={() => {window.location.href = ggOauth.link }}>
 			<div class="d-inline-flex badge bg-secondary fs-5">
 				<Fa color="lightgrey" icon={faGoogle} class="me-1"/>
 				<span class="text-wrap"> {$LL.signinMsgGoogle()}</span>

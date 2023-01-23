@@ -3,7 +3,9 @@ package oauth
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
+	"io"
 	"net/http"
 
 	"go.uber.org/zap"
@@ -29,6 +31,16 @@ type githubAccessTokenResp struct {
 	Scope       string `json:"scope"`
 }
 
+type githubUserInfoResp struct {
+	GhUid       int    `json:"id"`
+	GhUserHome  string `json:"html_url"`
+	UserId      string `json:"login"`
+	UserMail    string `json:"email"`
+	UserName    string `json:"name"`
+	UserCompany string `json:"company"`
+	AvatarUrl   string `json:"avatar_url"`
+}
+
 func New(clientId string, clientSecret string, logger *zap.SugaredLogger) *GithubOAuth {
 	return &GithubOAuth{
 		ClientID:     clientId,
@@ -52,50 +64,25 @@ func (g *GithubOAuth) GetOauthLink(host string) string {
 
 func (g *GithubOAuth) CallbackHandler(w http.ResponseWriter, r *http.Request) {
 	c := r.URL.Query().Get("code")
-
-	rqstBodyMap := map[string]string{
-		"client_id":     g.ClientID,
-		"client_secret": g.ClientSecret,
-		"code":          c,
-	}
-	rqstJson, _ := json.Marshal(rqstBodyMap)
-	req, err := http.NewRequest(
-		http.MethodPost,
-		g.TokenURL,
-		bytes.NewBuffer(rqstJson),
-	)
-	if err != nil {
-		g.Logger.Error("Github Oauth Request creation failed")
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Accept", "application/json")
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		g.Logger.Error("Github Oauth Request failed")
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-	defer resp.Body.Close()
-	var ghresp githubAccessTokenResp
-	if err := json.NewDecoder(resp.Body).Decode(&ghresp); err != nil {
-		g.Logger.Errorf("Could not parse JSON response: %v", err)
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
-
-	final, err := g.getUserInfo(ghresp)
+	ghresp, err := g.getAccessToken(c)
 	if err != nil {
 		g.Logger.Error(err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+	ghUserInfo, err := g.getUserInfo(ghresp)
+	if err != nil {
+		g.Logger.Error(err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	ghUserInfoJson, _ := json.Marshal(ghUserInfo)
 	w.WriteHeader(http.StatusOK)
-	w.Write(final)
+	w.Write(ghUserInfoJson)
 }
 
-func (g *GithubOAuth) getUserInfo(ghresp githubAccessTokenResp) ([]byte, error) {
+func (g *GithubOAuth) getUserInfo(ghresp *githubAccessTokenResp) (*githubUserInfoResp, error) {
 	req, err := http.NewRequest(
 		http.MethodGet,
 		"https://api.github.com/user",
@@ -110,5 +97,47 @@ func (g *GithubOAuth) getUserInfo(ghresp githubAccessTokenResp) ([]byte, error) 
 		return nil, fmt.Errorf("GET GITHUB USERINFO ERR:  %v", err)
 	}
 	defer resp.Body.Close()
-	return []byte(""), nil
+	if resp.StatusCode != http.StatusOK {
+		body, _ := io.ReadAll(resp.Body)
+		g.Logger.Errorf("Get Github UserInfo error, status: %d, body: %s", resp.StatusCode, string(body))
+		return nil, fmt.Errorf("GET github UserInfo Error, status code: %d", resp.StatusCode)
+	}
+	var u githubUserInfoResp
+	if err := json.NewDecoder(resp.Body).Decode(&u); err != nil {
+		g.Logger.Errorf("Could not parse JSON response: %v", err)
+		return nil, fmt.Errorf("ERROR: can not parse JSON response: %v", err)
+	}
+	return &u, nil
+}
+
+func (g *GithubOAuth) getAccessToken(code string) (*githubAccessTokenResp, error) {
+	rqstBodyMap := map[string]string{
+		"client_id":     g.ClientID,
+		"client_secret": g.ClientSecret,
+		"code":          code,
+	}
+	rqstJson, _ := json.Marshal(rqstBodyMap)
+	req, err := http.NewRequest(
+		http.MethodPost,
+		g.TokenURL,
+		bytes.NewBuffer(rqstJson),
+	)
+	if err != nil {
+		g.Logger.Error("Github Oauth Request creation failed")
+		return nil, errors.New("ERROR: Github Oauth Request creation failed")
+	}
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Accept", "application/json")
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		g.Logger.Error("Github Oauth Request failed")
+		return nil, errors.New("ERROR: Github Oauth Request failed")
+	}
+	defer resp.Body.Close()
+	var ghresp githubAccessTokenResp
+	if err := json.NewDecoder(resp.Body).Decode(&ghresp); err != nil {
+		g.Logger.Errorf("Could not parse JSON response: %v", err)
+		return nil, fmt.Errorf("ERROR: Could not parse JSON response: %v", err)
+	}
+	return &ghresp, nil
 }
