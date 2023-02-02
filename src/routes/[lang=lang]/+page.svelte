@@ -1,39 +1,39 @@
 <script lang="ts">
-	import type { PageData } from "./$types"
+	import type { PageData } from "./$types";
 
-	import LL from "$i18n/i18n-svelte"
-	import Fa from "svelte-fa"
-	import { faGithub, faGoogle } from "@fortawesome/free-brands-svg-icons"
-	import { BreakPoints as bp } from "$lib/styles/responsive"
+	import LL from "$i18n/i18n-svelte";
+	import Fa from "svelte-fa";
+	import { faGithub, faGoogle } from "@fortawesome/free-brands-svg-icons";
+	import { BreakPoints as bp } from "$lib/styles/responsive";
 
 	export let data: PageData;
 	const ghOauth = data?.oauthOtps?.github;
-	const ggOauth = data?.oauthOtps?.google;
+	const gglOauth = data?.oauthOtps?.google;
 </script>
 
 <svelte:head>
-	<title>{ $LL.pageTitle() }</title>
+	<title>{ $LL.home.pageTitle() }</title>
 	<meta name="description" content="Rigel Ledger App home page"/>
 	<meta name="author" content="walker088" />
 </svelte:head>
 
 <div class="grid-container">
 	<section class="grid-item__login">
-		<h1>{ $LL.title() }</h1>
-		<h4 class="fs-6 fw-light mb-4">{ $LL.subTitle() }</h4>
+		<h1>{ $LL.home.title() }</h1>
+		<h4 class="fs-6 fw-light mb-4">{ $LL.home.subTitle() }</h4>
 		{ #if ghOauth }
 		<button type="button" class="btn p-0" on:click={() => {window.location.href = ghOauth.link}}>
 			<div class="d-inline-flex badge bg-secondary fs-5">
 				<Fa color="lightgrey" icon={faGithub} class="me-1"/>
-				<span class="text-wrap"> {$LL.signinMsgGithub()}</span>
+				<span class="text-wrap"> {$LL.home.signinMsgGithub()}</span>
 			</div>
 		</button>
 		{/if}
-		{ #if ggOauth }
-		<button type="button" class="btn p-0" on:click={() => {window.location.href = ggOauth.link }}>
+		{ #if gglOauth }
+		<button type="button" class="btn p-0" on:click={() => {window.location.href = gglOauth.link }}>
 			<div class="d-inline-flex badge bg-secondary fs-5">
 				<Fa color="lightgrey" icon={faGoogle} class="me-1"/>
-				<span class="text-wrap"> {$LL.signinMsgGoogle()}</span>
+				<span class="text-wrap"> {$LL.home.signinMsgGoogle()}</span>
 			</div>
 		</button>
 		{/if}
@@ -47,7 +47,7 @@
 		</picture>
 	</section>
 	<section class="grid-item__info">
-		<p class="h4">{$LL.changeLogTitle()}: <br>
+		<p class="h4">{$LL.home.changeLogTitle()}: <br>
 			<span class="fs-6 fst-italic fw-light">API Version: {data.apiVersion}</span>
 		</p>
 		<p>{@html data.changeLogMd}</p>

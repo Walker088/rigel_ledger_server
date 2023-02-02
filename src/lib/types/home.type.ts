@@ -1,3 +1,4 @@
+import type { Dayjs } from "dayjs"
 
 export type LoginPageInfo = {
     apiVersion: string,
@@ -17,4 +18,11 @@ export type LoginPageInfo = {
 
 export type MainLayoutInfo = {
     locale: Locales,
+};
+
+export type JwtToken = {
+    AccessToken: string,
+    AccessTokenExpiry: Dayjs,
+    RefreshToken: string,
+    RefreshTokenExpiry: Dayjs,
 };
