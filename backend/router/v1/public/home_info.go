@@ -8,23 +8,12 @@ import (
 type HomeInfo struct {
 	ApiVersion  string `json:"apiVersion"`
 	ChangeLogMd string `json:"changeLogMd"`
-
-	OauthOtps map[string]struct {
-		Title string `json:"title"`
-		Link  string `json:"link"`
-	} `json:"oauthOtps"`
 }
 
-func NewHomeInfo(ghLink string) *HomeInfo {
+func NewHomeInfo() *HomeInfo {
 	return &HomeInfo{
 		ApiVersion:  "0.0.1",
 		ChangeLogMd: "Implementing",
-		OauthOtps: map[string]struct {
-			Title string `json:"title"`
-			Link  string `json:"link"`
-		}{
-			"github": {Title: "Github", Link: ghLink},
-		},
 	}
 }
 

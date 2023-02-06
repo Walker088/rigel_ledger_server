@@ -1,18 +1,18 @@
 <script lang="ts">
-    import type { PageData } from "./$types";
-    import { JwtManager } from '$lib/handlers/jwt';
+    //import type { PageData } from "./$types";
     import LL from "$i18n/i18n-svelte";
 	import { onMount } from "svelte";
     import Fa from "svelte-fa";
     //import { faGear } from "@fortawesome/free-solid-svg-icons";
     import { faGithub } from "@fortawesome/free-brands-svg-icons";
 
-    export let jwtToken: PageData;
+    //export let jwtToken: PageData;
 
     onMount(() => {
         setTimeout(() => {
-            JwtManager.setToken(jwtToken);
-            window.location.href = `/${jwtToken.locale}/protected`;
+            debugger
+            //JwtManager.setToken(jwtToken);
+            //window.location.href = `/${jwtToken.locale}/protected`;
         }, 3000);
     });
 </script>

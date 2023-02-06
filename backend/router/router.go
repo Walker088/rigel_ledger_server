@@ -1,7 +1,7 @@
 package router
 
 import (
-	"fmt"
+	//"fmt"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
@@ -9,6 +9,7 @@ import (
 	"go.uber.org/zap"
 
 	"github.com/Walker088/rigel_ledger_server/backend/config"
+	"github.com/Walker088/rigel_ledger_server/backend/jwt"
 	custommdw "github.com/Walker088/rigel_ledger_server/backend/router/middlewares"
 	"github.com/Walker088/rigel_ledger_server/backend/router/v1/protect"
 	"github.com/Walker088/rigel_ledger_server/backend/router/v1/public"
@@ -16,20 +17,21 @@ import (
 )
 
 type Mux struct {
-	Router *chi.Mux
-	logger *zap.SugaredLogger
+	Router    *chi.Mux
+	logger    *zap.SugaredLogger
+	jwtEngine *jwt.JwtEngine
 }
 
 func (m *Mux) initRoutes(c *config.AppConfig) {
-	var completeHost = fmt.Sprintf("http://%s:%s", c.AppHost, c.AppPort)
-	var auth = oauth.New(c.OauthGithubClientId, c.OauthGithubClientSecret, m.logger)
-	var home = public.NewHomeInfo(auth.GetOauthLink(completeHost))
+	//var completeHost = fmt.Sprintf("http://%s:%s", c.AppHost, c.AppPort)
+	var auth = oauth.New(c.OauthGithubClientId, c.OauthGithubClientSecret, m.logger, m.jwtEngine)
+	var home = public.NewHomeInfo()
 
 	m.Router.Route("/v1/public", func(r chi.Router) {
 		r.Get("/home", home.HomeInfoHandler)
 
 		r.Route("/oauth/github", func(r chi.Router) {
-			r.Get("/callback", auth.CallbackHandler)
+			r.Get("/login", auth.GithubLogin)
 		})
 	})
 	m.Router.Route("/v1/protect", func(r chi.Router) {
@@ -57,7 +59,7 @@ func (m *Mux) getChiRouteMethods() []string {
 	return nil
 }
 
-func New(c *config.AppConfig, logger *zap.SugaredLogger) *Mux {
+func New(c *config.AppConfig, logger *zap.SugaredLogger, jwtEngine *jwt.JwtEngine) *Mux {
 	//compressor := chimdw.NewCompressor(4)
 
 	r := chi.NewRouter()
@@ -69,8 +71,9 @@ func New(c *config.AppConfig, logger *zap.SugaredLogger) *Mux {
 	r.Use(mw.AccessLog)
 
 	m := &Mux{
-		Router: r,
-		logger: logger,
+		Router:    r,
+		logger:    logger,
+		jwtEngine: jwtEngine,
 	}
 	m.initRoutes(c)
 	mw.AllowMethods = m.getChiRouteMethods()

@@ -10,6 +10,7 @@ import (
 
 	"github.com/Walker088/rigel_ledger_server/backend/config"
 	db "github.com/Walker088/rigel_ledger_server/backend/database"
+	"github.com/Walker088/rigel_ledger_server/backend/jwt"
 	log "github.com/Walker088/rigel_ledger_server/backend/logger"
 	"github.com/Walker088/rigel_ledger_server/backend/router"
 )
@@ -23,8 +24,10 @@ func main() {
 	pool.StartPool()
 	defer pool.GetPool().Close()
 
+	jwt := jwt.New([]byte(c.JwtSecret), l)
+
 	l.Info("Welcome to RigelLedger")
-	m := router.New(c, l)
+	m := router.New(c, l, jwt)
 	srv := &http.Server{
 		Handler:      m.Router,
 		Addr:         fmt.Sprintf("%s:%s", c.AppHost, c.AppPort),

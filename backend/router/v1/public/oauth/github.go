@@ -8,21 +8,23 @@ import (
 	"io"
 	"net/http"
 
+	"github.com/Walker088/rigel_ledger_server/backend/jwt"
 	"go.uber.org/zap"
 )
 
 const (
-	authUrl  = "https://github.com/login/oauth/authorize"
+	//authUrl  = "https://github.com/login/oauth/authorize"
 	tokenURL = "https://github.com/login/oauth/access_token"
 )
 
 type GithubOAuth struct {
 	ClientID     string
 	ClientSecret string
-	AuthURL      string
-	TokenURL     string
+	//AuthURL      string
+	TokenURL string
 
-	Logger *zap.SugaredLogger
+	jwtEngine *jwt.JwtEngine
+	Logger    *zap.SugaredLogger
 }
 
 type githubAccessTokenResp struct {
@@ -41,28 +43,18 @@ type githubUserInfoResp struct {
 	AvatarUrl   string `json:"avatar_url"`
 }
 
-func New(clientId string, clientSecret string, logger *zap.SugaredLogger) *GithubOAuth {
+func New(clientId string, clientSecret string, logger *zap.SugaredLogger, jwtEngine *jwt.JwtEngine) *GithubOAuth {
 	return &GithubOAuth{
 		ClientID:     clientId,
 		ClientSecret: clientSecret,
-		AuthURL:      authUrl,
-		TokenURL:     tokenURL,
-		Logger:       logger,
+		//AuthURL:      authUrl,
+		TokenURL:  tokenURL,
+		Logger:    logger,
+		jwtEngine: jwtEngine,
 	}
 }
 
-func (g *GithubOAuth) GetOauthLink(host string) string {
-	return fmt.Sprintf(
-		`%s?client_id=%s&redirect_uri=%s%s&scope=%s`,
-		g.AuthURL,
-		g.ClientID,
-		host,
-		"/v1/public/oauth/github/callback",
-		"user:email",
-	)
-}
-
-func (g *GithubOAuth) CallbackHandler(w http.ResponseWriter, r *http.Request) {
+func (g *GithubOAuth) GithubLogin(w http.ResponseWriter, r *http.Request) {
 	c := r.URL.Query().Get("code")
 	ghresp, err := g.getAccessToken(c)
 	if err != nil {
@@ -76,10 +68,16 @@ func (g *GithubOAuth) CallbackHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+	tokens, err := g.jwtEngine.GenTokens(ghUserInfo.UserId)
+	if err != nil {
+		g.Logger.Error(err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 
-	ghUserInfoJson, _ := json.Marshal(ghUserInfo)
+	marshaledTokens, _ := json.Marshal(tokens)
 	w.WriteHeader(http.StatusOK)
-	w.Write(ghUserInfoJson)
+	w.Write(marshaledTokens)
 }
 
 func (g *GithubOAuth) getUserInfo(ghresp *githubAccessTokenResp) (*githubUserInfoResp, error) {

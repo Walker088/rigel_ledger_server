@@ -3,12 +3,10 @@
 
 	import LL from "$i18n/i18n-svelte";
 	import Fa from "svelte-fa";
-	import { faGithub, faGoogle } from "@fortawesome/free-brands-svg-icons";
+	import { faGithub } from "@fortawesome/free-brands-svg-icons";
 	import { BreakPoints as bp } from "$lib/styles/responsive";
 
 	export let data: PageData;
-	const ghOauth = data?.oauthOtps?.github;
-	const gglOauth = data?.oauthOtps?.google;
 </script>
 
 <svelte:head>
@@ -21,14 +19,15 @@
 	<section class="grid-item__login">
 		<h1>{ $LL.home.title() }</h1>
 		<h4 class="fs-6 fw-light mb-4">{ $LL.home.subTitle() }</h4>
-		{ #if ghOauth }
-		<button type="button" class="btn p-0" on:click={() => {window.location.href = ghOauth.link}}>
+		{ #if data.ghOauthUrl }
+		<button type="button" class="btn p-0" on:click={() => {window.location.href = data.ghOauthUrl || ""}}>
 			<div class="d-inline-flex badge bg-secondary fs-5">
 				<Fa color="lightgrey" icon={faGithub} class="me-1"/>
 				<span class="text-wrap"> {$LL.home.signinMsgGithub()}</span>
 			</div>
 		</button>
 		{/if}
+		<!--
 		{ #if gglOauth }
 		<button type="button" class="btn p-0" on:click={() => {window.location.href = gglOauth.link }}>
 			<div class="d-inline-flex badge bg-secondary fs-5">
@@ -37,6 +36,7 @@
 			</div>
 		</button>
 		{/if}
+		-->
 	</section>
 	<section class="grid-item__photo">
 		<picture>

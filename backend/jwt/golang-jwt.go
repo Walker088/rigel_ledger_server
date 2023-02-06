@@ -5,10 +5,12 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v4"
+	"go.uber.org/zap"
 )
 
 type JwtEngine struct {
-	secret string
+	secret []byte
+	logger *zap.SugaredLogger
 	//refreshTokens map[string]string
 }
 
@@ -19,14 +21,15 @@ type Tokens struct {
 	RefreshTokenExpiry int64  `json:"refreshTokenExpiry"`
 }
 
-func New(secret string) *JwtEngine {
+func New(secret []byte, logger *zap.SugaredLogger) *JwtEngine {
 	return &JwtEngine{
 		secret: secret,
+		logger: logger,
 	}
 }
 
-func (j *JwtEngine) CreateToken(user string) (*Tokens, error) {
-	now := time.Now().UTC()
+func (j *JwtEngine) GenTokens(user string) (*Tokens, error) {
+	now := time.Now()
 	accessDuration := time.Duration(5) * time.Minute
 	refreshDuration := time.Duration(5) * time.Hour
 

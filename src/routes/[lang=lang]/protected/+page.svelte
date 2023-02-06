@@ -12,7 +12,7 @@
 </svelte:head>
 
 <div class="grid-container">
-    <h1>{$LL.protect.home.title( { userName: userInfo.userName } )}</h1>
+    <h1>{$LL.protect.home.title( { userName: userInfo?.userName } )}</h1>
 </div>
 
 <style lang="scss">

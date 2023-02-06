@@ -1,19 +1,8 @@
-import type { Dayjs } from "dayjs"
-
 export type LoginPageInfo = {
     apiVersion: string,
     changeLogMd: string,
+    ghOauthUrl?: string,
 
-    oauthOtps?: {
-        github?: {
-            title: string,
-            link: string,
-        },
-        google?: {
-            title: string,
-            link: string,
-        }
-    }
 }
 
 export type MainLayoutInfo = {
@@ -22,7 +11,7 @@ export type MainLayoutInfo = {
 
 export type JwtToken = {
     AccessToken: string,
-    AccessTokenExpiry: Dayjs,
+    AccessTokenExpiry: number,
     RefreshToken: string,
-    RefreshTokenExpiry: Dayjs,
+    RefreshTokenExpiry: number,
 };

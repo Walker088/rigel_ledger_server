@@ -24,7 +24,7 @@ const send = async (options: RequestInit, path: string, token?: string) => {
 			throw error(res.status);
 		})
 		.catch(e => {
-			console.log(e);
+			throw error(e);
 		});
 };
 

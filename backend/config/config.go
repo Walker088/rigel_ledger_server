@@ -21,6 +21,7 @@ type AppConfig struct {
 	AppHost         string   `env:"APP_HOST" envDefault:"localhost"`
 	AppPort         string   `env:"APP_PORT" envDefault:"8000"`
 	AppAllowOrigins []string `env:"APP_ALLOW_ORIGINS"`
+	JwtSecret       string   `env:"JWT_SECRET"`
 
 	GithubOAuthConfig
 }
