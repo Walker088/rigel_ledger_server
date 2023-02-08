@@ -8,6 +8,7 @@ export const prerender = true;
 
 export const load: PageServerLoad<LoginPageInfo> = async ({locals, url}) => {
     const accessToken = await JwtManager.getAccessToken();
+    debugger
     if (accessToken) {
         throw redirect(301, `/${locals.locale}/protected`);
     }

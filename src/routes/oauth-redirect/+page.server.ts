@@ -7,7 +7,6 @@ import { redirect } from '@sveltejs/kit';
 import dayjs from "dayjs";
 
 export const load: PageServerLoad<JwtToken> = async ({ url, locals }) => {
-    debugger
     const authCode = url.searchParams.get("code");
     if (!authCode) {
         throw redirect(307, `/${locals.locale}`);

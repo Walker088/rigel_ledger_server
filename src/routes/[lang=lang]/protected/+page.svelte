@@ -2,7 +2,7 @@
     import type { PageData } from "./$types";
     import LL from "$i18n/i18n-svelte";
 
-    export let userInfo: PageData;
+    export let data: PageData;
 </script>
 
 <svelte:head>
@@ -12,7 +12,7 @@
 </svelte:head>
 
 <div class="grid-container">
-    <h1>{$LL.protect.home.title( { userName: userInfo?.userName } )}</h1>
+    <h1>{$LL.protect.home.title( { userName: data.userName } )}</h1>
 </div>
 
 <style lang="scss">
