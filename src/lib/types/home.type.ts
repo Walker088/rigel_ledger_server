@@ -1,9 +1,3 @@
-export type LoginPageInfo = {
-    apiVersion: string,
-    changeLogMd: string,
-    ghOauthUrl?: string,
-
-}
 
 export type MainLayoutInfo = {
     locale: Locales,

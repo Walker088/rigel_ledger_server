@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS user_ledgers (
 	PRIMARY KEY(ledger_id)
 );
 COMMENT ON TABLE user_ledgers IS 'Defined by users, the app should provide a template for general types';
-COMMENT ON COLUMN user_ledgers.ledger_id IS 'e.g., walker088_1111_01';
+COMMENT ON COLUMN user_ledgers.ledger_id IS 'e.g., walker088_A111_01';
 COMMENT ON COLUMN user_ledgers.ledger_owner IS 'e.g., walker088';
 COMMENT ON COLUMN user_ledgers.ledger_name IS 'Under the ledger_type_name, e.g., Operating expenses, Cash, Tax, LivingExpense';
 COMMENT ON COLUMN user_ledgers.ledger_type_id IS 'Related to ledger_types, e.g., A111';
@@ -54,7 +54,7 @@ CREATE TABLE IF NOT EXISTS user_stocks_us (
 	avg_share_cost NUMERIC(12, 4),
 	PRIMARY KEY(ledger_id, stock_id, orden)
 );
-COMMENT ON COLUMN user_stocks_us.ledger_id IS 'e.g., Firstrade, IB, etc.';
+COMMENT ON COLUMN user_stocks_us.ledger_id IS 'e.g., walker088_A111_01, Firstrade, IB, etc.';
 COMMENT ON COLUMN user_stocks_us.stock_id IS 'e.g., TSLA';
 COMMENT ON COLUMN user_stocks_us.operation IS '0: buy, 1: sell';
 
