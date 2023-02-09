@@ -56,7 +56,7 @@ func (m *MiddleWares) DefaultRestHeaders(next http.Handler) http.Handler {
 
 func (m *MiddleWares) ValidateJwt(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-
+		m.logger.Infoln("ValidateJwt")
 		next.ServeHTTP(w, r)
 	})
 }

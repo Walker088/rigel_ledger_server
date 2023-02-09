@@ -22,7 +22,7 @@ type Mux struct {
 	jwtEngine *jwt.JwtEngine
 }
 
-func (m *Mux) initRoutes(c *config.AppConfig) {
+func (m *Mux) initRoutes(c *config.AppConfig, mw *custommdw.MiddleWares) {
 	//var completeHost = fmt.Sprintf("http://%s:%s", c.AppHost, c.AppPort)
 	var auth = oauth.New(c.OauthGithubClientId, c.OauthGithubClientSecret, m.logger, m.jwtEngine)
 	var home = public.NewHomeInfo()
@@ -35,6 +35,7 @@ func (m *Mux) initRoutes(c *config.AppConfig) {
 		})
 	})
 	m.Router.Route("/v1/protect", func(r chi.Router) {
+		r.Use(mw.ValidateJwt)
 		r.Get("/{userId}", protect.UserHomeHandler)
 	})
 }
@@ -75,7 +76,7 @@ func New(c *config.AppConfig, logger *zap.SugaredLogger, jwtEngine *jwt.JwtEngin
 		logger:    logger,
 		jwtEngine: jwtEngine,
 	}
-	m.initRoutes(c)
+	m.initRoutes(c, mw)
 	mw.AllowMethods = m.getChiRouteMethods()
 
 	m.logger.Info("Chi Mux Initialized")
