@@ -11,7 +11,7 @@ import (
 	"github.com/Walker088/rigel_ledger_server/backend/config"
 	"github.com/Walker088/rigel_ledger_server/backend/jwt"
 	custommdw "github.com/Walker088/rigel_ledger_server/backend/router/middlewares"
-	"github.com/Walker088/rigel_ledger_server/backend/router/v1/protect"
+	protect "github.com/Walker088/rigel_ledger_server/backend/router/v1/protected"
 	"github.com/Walker088/rigel_ledger_server/backend/router/v1/public"
 	"github.com/Walker088/rigel_ledger_server/backend/router/v1/public/oauth"
 )
@@ -34,7 +34,7 @@ func (m *Mux) initRoutes(c *config.AppConfig, mw *custommdw.MiddleWares) {
 			r.Get("/login", auth.GithubLogin)
 		})
 	})
-	m.Router.Route("/v1/protect", func(r chi.Router) {
+	m.Router.Route("/v1/protected", func(r chi.Router) {
 		r.Use(mw.ValidateJwt)
 		r.Get("/{userId}", protect.UserHomeHandler)
 	})

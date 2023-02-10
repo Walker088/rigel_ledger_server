@@ -15,7 +15,6 @@ export class JwtManager {
         this._refreshToken = "";
         this._refreshTokenExp = 0;
     }
-
     private static async refreshAccessToken() {
         const inst = this;
         return http.post("", [], this.Instance._refreshToken)
@@ -25,9 +24,15 @@ export class JwtManager {
                 console.log(e);
             });
     }
-
     public static getInstance(): JwtManager {
         return this.Instance;
+    }
+    public static getUidFromToken(token: string): string | undefined {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace('-', '+').replace('_', '/');
+        const decoded = Buffer.from(base64, 'base64').toString();
+        const json = JSON.parse(decoded);
+        return json?.userId;
     }
     public static async getAccessToken(): Promise<string | null> {
         const now  = dayjs();
