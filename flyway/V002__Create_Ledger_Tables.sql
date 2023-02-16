@@ -20,13 +20,13 @@ COMMENT ON COLUMN journal_book.currency IS 'ISO 4217 alphabetic_code_3, e.g, TWD
 CREATE TABLE IF NOT EXISTS ledger_balance (
 	ledger_id TEXT,
 	transac_id INT8,
+	currency VARCHAR(3),
 	balance NUMERIC(20, 4),
 	created_time TIMESTAMP WITH TIME ZONE,
 	PRIMARY KEY(ledger_id, transac_id)
 );
 COMMENT ON TABLE ledger_balance IS 'Used to generate the trail balance for a given period, maintaine the current balance of each account';
-COMMENT ON COLUMN ledger_balance.transac_id IS 'Used to generate income_statement';
-COMMENT ON COLUMN ledger_balance.transac_id IS 'Used to generate balance_sheet';
+COMMENT ON COLUMN ledger_balance.original_balance IS 'The balance in the ledger currency';
 
 CREATE TABLE IF NOT EXISTS user_ledgers (
 	ledger_id TEXT,
@@ -83,8 +83,10 @@ CREATE TABLE IF NOT EXISTS ledger_types (
 	second_grade   VARCHAR(2),
 	third_grade    VARCHAR(3),
 	type_name TEXT,
-	PRIMARY KEY (type_id)
+	PRIMARY KEY (ledger_type_id)
 );
 COMMENT ON TABLE ledger_types IS 'To generate the balance sheet and the income statement sheet, predefined by the system to generate the accounting reports. REF[IFRS 16]: https://www.dgbas.gov.tw/News_Content.aspx?n=1961&s=17935';
-COMMENT ON COLUMN ledger_types.first_grade IS 'Fourth grade, e.g., A111';
+COMMENT ON COLUMN ledger_types.ledger_type_id IS 'Fourth grade, e.g., A111 Cash on hand';
 COMMENT ON COLUMN ledger_types.first_grade IS 'A: Assets, B: Liabilities, C: Owners equity, D: Self-Defined Operating income, E: Self-Defined expenses, F: Self-Defined Non‑operating income and expenses';
+COMMENT ON COLUMN ledger_types.second_grade IS 'A1: Current Assets, A2: Fixed Assets';
+COMMENT ON COLUMN ledger_types.third_grade IS 'A11: Cash and cash equivalents';

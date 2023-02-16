@@ -9,7 +9,6 @@ export const load: PageServerLoad<JwtToken> = async ({ url, locals }) => {
     if (!authCode) {
         throw redirect(307, `/${locals.locale}`);
     }
-    //const now = dayjs();
     const jwtToken = await http.get(`v1/public/oauth/github/login?code=${authCode}`)
         .then(d => ({
             AccessToken: d.accessToken,

@@ -9,5 +9,7 @@ func UserHomeHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	//uid := chi.URLParam(r, "userId")
+
 	w.WriteHeader(http.StatusOK)
 }

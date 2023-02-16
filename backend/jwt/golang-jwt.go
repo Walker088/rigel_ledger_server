@@ -21,6 +21,11 @@ type Tokens struct {
 	RefreshTokenExpiry int64  `json:"refreshTokenExpiry"`
 }
 
+type CustomClaims struct {
+	UserId string `json:"userId"`
+	jwt.RegisteredClaims
+}
+
 func New(secret []byte, logger *zap.SugaredLogger) *JwtEngine {
 	return &JwtEngine{
 		secret: secret,
@@ -33,26 +38,32 @@ func (j *JwtEngine) GenTokens(user string) (*Tokens, error) {
 	accessDuration := time.Duration(5) * time.Minute
 	refreshDuration := time.Duration(5) * time.Hour
 
-	accessToken, err := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.RegisteredClaims{
-		ExpiresAt: jwt.NewNumericDate(now.Add(accessDuration)),
-		ID:        user,
-		IssuedAt:  jwt.NewNumericDate(now),
-		Issuer:    "RigelLedger",
-		NotBefore: jwt.NewNumericDate(now),
-		Subject:   "RigelLedger AccessToken",
-	}).SignedString(j.secret)
+	claims := CustomClaims{
+		user,
+		jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(now.Add(accessDuration)),
+			IssuedAt:  jwt.NewNumericDate(now),
+			Issuer:    "RigelLedger",
+			NotBefore: jwt.NewNumericDate(now),
+			Subject:   "RigelLedger AccessToken",
+		},
+	}
+	accessToken, err := jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString(j.secret)
 	if err != nil {
 		return nil, fmt.Errorf("JWT Access Token Creation error: %v", err)
 	}
 
-	refreshToken, err := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.RegisteredClaims{
-		ExpiresAt: jwt.NewNumericDate(now.Add(refreshDuration)),
-		ID:        user,
-		IssuedAt:  jwt.NewNumericDate(now),
-		Issuer:    "RigelLedger",
-		NotBefore: jwt.NewNumericDate(now),
-		Subject:   "RigelLedger RefreshToken",
-	}).SignedString(j.secret)
+	claims = CustomClaims{
+		user,
+		jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(now.Add(refreshDuration)),
+			IssuedAt:  jwt.NewNumericDate(now),
+			Issuer:    "RigelLedger",
+			NotBefore: jwt.NewNumericDate(now),
+			Subject:   "RigelLedger RefreshToken",
+		},
+	}
+	refreshToken, err := jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString(j.secret)
 	if err != nil {
 		return nil, fmt.Errorf("JWT Refresh Token Creation error: %v", err)
 	}

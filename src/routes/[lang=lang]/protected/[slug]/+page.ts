@@ -18,7 +18,7 @@ type UserInfo = {
 type LedgerSummary = {
     balance: {
         assets: number,
-        liabilityies: number,
+        liabilities: number,
         networth: number,
     },
     income: {

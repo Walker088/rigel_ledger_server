@@ -22,7 +22,8 @@
                     RefreshToken,
                     RefreshTokenExpiry
                 });
-                location.href = `/${data.locale}/protected`;
+                const userId = JwtManager.getUidFromToken(AccessToken);
+                location.href = `/${data.locale}/protected/${userId}`;
             } else {
                 throw error(401, {message: "The jwt token is invalid"});
             }

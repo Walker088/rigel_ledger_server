@@ -65,6 +65,6 @@ CREATE TABLE IF NOT EXISTS generated_reports_seasonal (
 	report_content JSONB,
 	PRIMARY KEY (report_year, report_season, report_owner, report_type)
 );
-COMMENT ON COLUMN generated_reports_seasonal.report_season IS '-- 1: [jan, mar], 2: [apr, jun], 3: [jul, sep], 4: [oct, dic]'
+COMMENT ON COLUMN generated_reports_seasonal.report_season IS '1: [jan, mar], 2: [apr, jun], 3: [jul, sep], 4: [oct, dic]';
 COMMENT ON COLUMN generated_reports_seasonal.report_type IS '0: balance_sheet, 1: income_statement, 3: Investment_sheet';
 COMMENT ON COLUMN generated_reports_seasonal.report_content IS 'Applications should implement the corresponding parser for each report type';
