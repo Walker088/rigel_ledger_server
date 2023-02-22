@@ -8,26 +8,30 @@ import (
 	"os/signal"
 	"time"
 
+	"github.com/Walker088/rigel_ledger_server/backend"
 	"github.com/Walker088/rigel_ledger_server/backend/config"
-	db "github.com/Walker088/rigel_ledger_server/backend/database"
+	"github.com/Walker088/rigel_ledger_server/backend/database"
 	"github.com/Walker088/rigel_ledger_server/backend/jwt"
-	log "github.com/Walker088/rigel_ledger_server/backend/logger"
+	"github.com/Walker088/rigel_ledger_server/backend/logger"
 	"github.com/Walker088/rigel_ledger_server/backend/router"
 )
 
 func main() {
 	c := config.GetAppConfig()
-	l := log.New()
+	l := logger.New()
 	defer l.Sync()
 
-	pool := db.PgPool{Logger: l}
-	pool.StartPool()
-	defer pool.GetPool().Close()
+	pool, err := database.New(config.GetPgConfig())
+	if err != nil {
+		l.DPanicf("Init DB Conn Pool error: %w", err)
+	}
+	defer pool.ShutDownPool()
 
 	jwt := jwt.New([]byte(c.JwtSecret), l)
+	gctx := backend.New(pool.GetPool(), jwt, l)
 
 	l.Info("Welcome to RigelLedger")
-	m := router.New(c, l, jwt)
+	m := router.New(c, gctx)
 	srv := &http.Server{
 		Handler:      m.Router,
 		Addr:         fmt.Sprintf("%s:%s", c.AppHost, c.AppPort),

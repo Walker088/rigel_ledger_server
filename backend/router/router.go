@@ -1,42 +1,45 @@
 package router
 
 import (
-	//"fmt"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
 	chimdw "github.com/go-chi/chi/v5/middleware"
 	"go.uber.org/zap"
 
+	"github.com/Walker088/rigel_ledger_server/backend"
 	"github.com/Walker088/rigel_ledger_server/backend/config"
-	"github.com/Walker088/rigel_ledger_server/backend/jwt"
+	"github.com/Walker088/rigel_ledger_server/backend/database/dao"
 	custommdw "github.com/Walker088/rigel_ledger_server/backend/router/middlewares"
-	protect "github.com/Walker088/rigel_ledger_server/backend/router/v1/protected"
+	"github.com/Walker088/rigel_ledger_server/backend/router/v1/protected"
 	"github.com/Walker088/rigel_ledger_server/backend/router/v1/public"
 	"github.com/Walker088/rigel_ledger_server/backend/router/v1/public/oauth"
 )
 
 type Mux struct {
-	Router    *chi.Mux
-	logger    *zap.SugaredLogger
-	jwtEngine *jwt.JwtEngine
+	Router *chi.Mux
+	logger *zap.SugaredLogger
 }
 
-func (m *Mux) initRoutes(c *config.AppConfig, mw *custommdw.MiddleWares) {
-	//var completeHost = fmt.Sprintf("http://%s:%s", c.AppHost, c.AppPort)
-	var auth = oauth.New(c.OauthGithubClientId, c.OauthGithubClientSecret, m.logger, m.jwtEngine)
-	var home = public.NewHomeInfo()
+func (m *Mux) initRoutes(c *config.AppConfig, mw *custommdw.MiddleWares, gctx *backend.Context) {
 
 	m.Router.Route("/v1/public", func(r chi.Router) {
+		auth := oauth.New(c.OauthGithubClientId, c.OauthGithubClientSecret, m.logger, gctx.Jwt)
+		home := public.NewHomeInfo()
 		r.Get("/home", home.HomeInfoHandler)
 
 		r.Route("/oauth/github", func(r chi.Router) {
 			r.Get("/login", auth.GithubLogin)
 		})
 	})
-	m.Router.Route("/v1/protected", func(r chi.Router) {
+	m.Router.Route("/v1/protected/user", func(r chi.Router) {
 		r.Use(mw.ValidateJwt)
-		r.Get("/{userId}", protect.UserHomeHandler)
+
+		userDao := dao.NewUserDao(gctx.Pool)
+		h := &protected.UserHandler{Dao: userDao}
+		r.Get("/{userId}/basic", h.GetUserBasicHandler)
+		r.Get("/{userId}/complete", h.GetUserCompleteHandler)
+
 	})
 }
 
@@ -60,11 +63,11 @@ func (m *Mux) getChiRouteMethods() []string {
 	return nil
 }
 
-func New(c *config.AppConfig, logger *zap.SugaredLogger, jwtEngine *jwt.JwtEngine) *Mux {
+func New(c *config.AppConfig, gctx *backend.Context) *Mux {
 	//compressor := chimdw.NewCompressor(4)
 
 	r := chi.NewRouter()
-	mw := custommdw.New(logger, c.AppAllowOrigins)
+	mw := custommdw.New(gctx.Logger, c.AppAllowOrigins)
 	r.Use(chimdw.RealIP)
 	//r.Use(compressor.Handler)
 	r.Use(mw.DefaultRestHeaders)
@@ -72,11 +75,10 @@ func New(c *config.AppConfig, logger *zap.SugaredLogger, jwtEngine *jwt.JwtEngin
 	r.Use(mw.AccessLog)
 
 	m := &Mux{
-		Router:    r,
-		logger:    logger,
-		jwtEngine: jwtEngine,
+		Router: r,
+		logger: gctx.Logger,
 	}
-	m.initRoutes(c, mw)
+	m.initRoutes(c, mw, gctx)
 	mw.AllowMethods = m.getChiRouteMethods()
 
 	m.logger.Info("Chi Mux Initialized")

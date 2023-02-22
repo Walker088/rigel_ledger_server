@@ -1,6 +1,6 @@
 
-TRUNCATE countries_iso3166_1;
-TRUNCATE currencies_iso4217;
-TRUNCATE languages_iso639_1;
-TRUNCATE ledger_types;
+TRUNCATE ref_countries_iso3166_1;
+TRUNCATE ref_currencies_iso4217;
+TRUNCATE ref_languages_iso639_1;
+TRUNCATE ref_ledger_types;
 
