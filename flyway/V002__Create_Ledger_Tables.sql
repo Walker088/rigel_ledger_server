@@ -33,6 +33,7 @@ CREATE TABLE IF NOT EXISTS user_ledgers (
 	ledger_owner TEXT,
 	ledger_name TEXT,
 	ledger_type_id INT4, -- e.g., A111
+	ledger_rules JSONB,
 	PRIMARY KEY(ledger_id)
 );
 COMMENT ON TABLE user_ledgers IS 'Defined by users, the app should provide a template for general types';
@@ -82,11 +83,42 @@ CREATE TABLE IF NOT EXISTS ref_ledger_types (
 	first_grade    VARCHAR(1), 
 	second_grade   VARCHAR(2),
 	third_grade    VARCHAR(3),
-	type_name TEXT,
+	type_name      TEXT,
+	type_name_zh   TEXT,
 	PRIMARY KEY (ledger_type_id)
 );
-COMMENT ON TABLE ref_ledger_types IS 'To generate the balance sheet and the income statement sheet, predefined by the system to generate the accounting reports. REF[IFRS 16]: https://www.dgbas.gov.tw/News_Content.aspx?n=1961&s=17935';
-COMMENT ON COLUMN ref_ledger_types.ledger_type_id IS 'Fourth grade, e.g., A111 Cash on hand';
-COMMENT ON COLUMN ref_ledger_types.first_grade IS 'A: Assets, B: Liabilities, C: Owners equity, D: Self-Defined Operating income, E: Self-Defined expenses, F: Self-Defined Non-operating income and expenses';
-COMMENT ON COLUMN ref_ledger_types.second_grade IS 'A1: Current Assets, A2: Fixed Assets';
-COMMENT ON COLUMN ref_ledger_types.third_grade IS 'A11: Cash and cash equivalents';
+COMMENT ON TABLE ref_ledger_types IS 'To generate the balance sheet and the income statement sheet, predefined by the system to generate the accounting reports. REF[IFRS 16]: https://gcis.nat.gov.tw/mainNew/matterAction.do?method=showFile&fileNo=t70215_p';
+COMMENT ON COLUMN ref_ledger_types.ledger_type_id IS 'Fourth grade, e.g., A111 Salary revenue';
+COMMENT ON COLUMN ref_ledger_types.first_grade IS 'Ref: ref_ledger_first_grade';
+COMMENT ON COLUMN ref_ledger_types.second_grade IS 'Ref: ref_ledger_second_grade';
+COMMENT ON COLUMN ref_ledger_types.third_grade IS 'Ref: ref_ledger_third_grade';
+
+CREATE TABLE IF NOT EXISTS ref_ledger_first_grade (
+	first_grade    VARCHAR(1), 
+	type_name      TEXT,
+	type_name_zh   TEXT,
+	descrip        TEXT,
+	descrip_zh     TEXT,
+	PRIMARY KEY (first_grade)
+);
+
+CREATE TABLE IF NOT EXISTS ref_ledger_second_grade (
+	first_grade    VARCHAR(1),
+	second_grade   VARCHAR(2),
+	type_name      TEXT,
+	type_name_zh   TEXT,
+	descrip        TEXT,
+	descrip_zh     TEXT,
+	PRIMARY KEY (second_grade)
+);
+
+CREATE TABLE IF NOT EXISTS ref_ledger_third_grade (
+	first_grade    VARCHAR(1),
+	second_grade   VARCHAR(2),
+	third_grade    VARCHAR(3),
+	type_name      TEXT,
+	type_name_zh   TEXT,
+	descrip        TEXT,
+	descrip_zh     TEXT,
+	PRIMARY KEY (third_grade)
+);
