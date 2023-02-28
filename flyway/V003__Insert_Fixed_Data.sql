@@ -31,7 +31,7 @@ VALUES
 ('EN', 'English', 'English');
 
 TRUNCATE ref_ledger_first_grade;
-INSERT INTO ref_ledger_first_grade (first_grade, type_name, type_name_zh, descrip, descrip_zh)
+INSERT INTO ref_ledger_first_grade (first_grade, type_name, type_name_zh, description_en, description_zh)
 VALUES
 ('1', 'Assets', '資產',
 'Economic resources controlled by an entity as a result of past transactions or events and from which future economic benefits probably are obtained.',
@@ -62,7 +62,7 @@ VALUES
 '指本期內個人或家庭運作費損，由本系統自定義，以和一般會計科目做區隔。');
 
 TRUNCATE ref_ledger_second_grade;
-INSERT INTO ref_ledger_second_grade (first_grade, second_grade, type_name, type_name_zh, descrip, descrip_zh)
+INSERT INTO ref_ledger_second_grade (first_grade, second_grade, type_name, type_name_zh, description_en, description_zh)
 VALUES
 ('1', '11', 'Current assets', '流動資產', 'Current assets are cash and other assets expected to be converted to cash, sold, or consumed within a year', '指現金、短期投資及其他預期能於一年內變現或耗用之資產。'),
 ('1', '12', 'Current assets', '流動資產', 'Current assets are cash and other assets expected to be converted to cash, sold, or consumed within a year', '指現金、短期投資及其他預期能於一年內變現或耗用之資產。'),

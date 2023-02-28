@@ -7,17 +7,17 @@ END;
 $$ language 'plpgsql';
 
 CREATE TABLE IF NOT EXISTS user_info (
-	user_id TEXT,
-	user_id_gh TEXT,
-	user_id_gg TEXT,
-	user_name VARCHAR(20),
-	user_mail TEXT,
-	user_type INT2,
-	main_country    VARCHAR(2),
-	main_language   VARCHAR(2),
-	main_currency   VARCHAR(3),
-	created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-	updated_at TIMESTAMP WITH TIME ZONE,
+	user_id         TEXT,
+	user_id_gh      TEXT,
+	user_id_gg      TEXT,
+	user_name       VARCHAR(20) NOT NULL,
+	user_mail       TEXT NOT NULL,
+	user_type       INT2 NOT NULL,
+	main_country    VARCHAR(2) NOT NULL,
+	main_language   VARCHAR(2) NOT NULL,
+	main_currency   VARCHAR(3) NOT NULL,
+	created_at      TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+	updated_at      TIMESTAMP WITH TIME ZONE,
 	PRIMARY KEY(user_id)
 );
 DROP TRIGGER IF EXISTS user_info_updated_at ON user_info;

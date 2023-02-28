@@ -37,10 +37,10 @@ type LedgerSummary struct {
 type MonthlyTxs struct {
 	TransacId         int       `json:"transacId" db:"transac_id"`
 	TransacDate       time.Time `json:"transacDate" db:"transac_date"`
-	DebitAccountCode  string    `json:"debitAccountCode" db:"debit_account"`
-	DebitAccountName  string    `json:"debitAccountName" db:"debit_account_name"`
 	CreditAccountCode string    `json:"creditAccountCode" db:"credit_account"`
 	CreditAccountName string    `json:"creditAccountName" db:"credit_account_name"`
+	DebitAccountCode  string    `json:"debitAccountCode" db:"debit_account"`
+	DebitAccountName  string    `json:"debitAccountName" db:"debit_account_name"`
 	Currency          string    `json:"currency" db:"currency"`
 	OriginalAmt       string    `json:"originalAmt" db:"amount_origin"`
 	AdjustedAmt       string    `json:"adjustedAmt" db:"amount_adjusted"`
