@@ -1,26 +1,3 @@
-
-TRUNCATE ref_countries_iso3166_1;
-INSERT INTO ref_countries_iso3166_1 (
-	alphabetic_code_2, alphabetic_code_3, 
-	numeric_code, country_name, 
-	official_state_name, sovereignty, top_domain
-)
-VALUES 
-('TW', 'TWN', 158, 'Taiwan', 'The Republic of China', 'Disputed', '.tw'),
-('PY', 'PRY', 600, 'Paraguay', 'The Republic of Paraguay', 'UN member state', '.py'),
-('AU', 'AUS', 36, 'Australia', 'The Commonwealth of Australia', 'UN member state', '.au'),
-('US', 'USA', 840, 'United States of America (the)', 'The United States of America', 'UN member state', '.us');
-
-TRUNCATE ref_currencies_iso4217;
-INSERT INTO ref_currencies_iso4217 (
-	alphabetic_code, numeric_code, minor_unit, currency_name
-)
-VALUES 
-('TWD', 901, 2, 'New Taiwan dollar'),
-('PYG', 600, 0, 'Paraguayan guaraní'),
-('AUD', 36, 2, 'Australian dollar'),
-('USD', 840, 2, 'United States dollar');
-
 TRUNCATE ref_languages_iso639_1;
 INSERT INTO ref_languages_iso639_1 (
 	alphabetic_code, language_name, language_name_en
