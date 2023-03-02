@@ -54,6 +54,7 @@ CREATE TABLE IF NOT EXISTS user_ledgers (
 	balance         NUMERIC(20, 6),
 	ledger_tags     TEXT[], -- List of string
 	ledger_rules    JSONB,
+	ledger_status   INT2, -- 0: Inactive 1: Active
 	created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
 	updated_at TIMESTAMP WITH TIME ZONE,
 	PRIMARY KEY(ledger_id)

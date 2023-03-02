@@ -49,17 +49,18 @@ func (u *UserHandler) GetUserBasicHandler(w http.ResponseWriter, r *http.Request
 func (u *UserHandler) UpdateUserHandler(w http.ResponseWriter, r *http.Request) {
 	uid := chi.URLParam(r, "userId")
 
-	var userInfo pojo.UserInfo
+	var userInfo pojo.UpdateUserInfo
 	decoder := json.NewDecoder(r.Body)
-	err := decoder.Decode(&userInfo)
-	if err == nil {
+	if err := decoder.Decode(&userInfo); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
+		return
 	}
 
 	if updatedUinfo, err := u.Dao.Update(uid, &userInfo); err == nil {
 		response, _ := json.Marshal(updatedUinfo)
 		w.WriteHeader(http.StatusOK)
 		w.Write(response)
+		return
 	}
 	w.WriteHeader(http.StatusInternalServerError)
 }

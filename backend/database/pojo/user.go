@@ -45,3 +45,13 @@ type MonthlyTxs struct {
 	OriginalAmt       string    `json:"originalAmt" db:"amount_origin"`
 	AdjustedAmt       string    `json:"adjustedAmt" db:"amount_adjusted"`
 }
+
+type UpdateUserInfo struct {
+	Id           string `json:"userId" db:"user_id"`
+	Name         string `json:"userName" db:"user_name"`
+	Mail         string `json:"userMail" db:"user_mail"`
+	TypeCode     uint8  `json:"userTypeCode" db:"user_type_code"`
+	MainCountry  string `json:"mainCountry" db:"main_country"`
+	MainCurrency string `json:"mainCurrency" db:"main_currency"`
+	MainLanguage string `json:"mainLanguage" db:"main_language"`
+}

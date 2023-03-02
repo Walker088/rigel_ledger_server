@@ -235,7 +235,7 @@ func (d *UserDao) GetComplete(userId string) (*pojo.UserInfo, error) {
 	return userInfo, nil
 }
 
-func (d *UserDao) Update(userId string, u *pojo.UserInfo) (*pojo.UserInfo, error) {
+func (d *UserDao) Update(userId string, u *pojo.UpdateUserInfo) (*pojo.UpdateUserInfo, error) {
 	updateUserQuery := `
 	UPDATE user_info
 	SET 

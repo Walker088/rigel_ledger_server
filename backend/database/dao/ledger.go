@@ -1,6 +1,9 @@
 package dao
 
-import "github.com/jackc/pgx/v5/pgxpool"
+import (
+	"github.com/Walker088/rigel_ledger_server/backend/database/pojo"
+	"github.com/jackc/pgx/v5/pgxpool"
+)
 
 type LedgerDao struct {
 	pool *pgxpool.Pool
@@ -12,10 +15,18 @@ func NewLedgerDao(p *pgxpool.Pool) *LedgerDao {
 	}
 }
 
-func (l *LedgerDao) Get(userId string) {}
+func (l *LedgerDao) Get(userId string, ledger_id string) (*pojo.LedgerInfo, error) {
+	var ledgerInfo pojo.LedgerInfo
 
-func (l *LedgerDao) GetList(userId string) {}
+	return &ledgerInfo, nil
+}
 
-func (l *LedgerDao) Create() {}
+func (l *LedgerDao) GetList(userId string) ([]*pojo.LedgerInfo, error) {
+	var userLedgers []*pojo.LedgerInfo
 
-func (l *LedgerDao) Update(userId string, transacId int) {}
+	return userLedgers, nil
+}
+
+func (l *LedgerDao) Create(ledgerInfo *pojo.LedgerInfo) {}
+
+func (l *LedgerDao) Update(userId string, updated *pojo.UpdateLedgerInfo) {}
