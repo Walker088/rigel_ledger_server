@@ -18,7 +18,7 @@ func NewLedgerDao(p *pgxpool.Pool) *LedgerDao {
 	}
 }
 
-func (l *LedgerDao) Get(ledger_id string) (*pojo.LedgerInfo, error) {
+func (l *LedgerDao) Get(ledgerId string) (*pojo.LedgerInfo, error) {
 	var ledgerInfo pojo.LedgerInfo
 	queryLedger := `
 	SELECT 
@@ -44,7 +44,7 @@ func (l *LedgerDao) Get(ledger_id string) (*pojo.LedgerInfo, error) {
 	WHERE
 		l.ledger_id = $1
 	`
-	if err := pgxscan.Get(context.Background(), l.pool, &ledgerInfo, queryLedger, ledger_id); err != nil {
+	if err := pgxscan.Get(context.Background(), l.pool, &ledgerInfo, queryLedger, ledgerId); err != nil {
 		return &ledgerInfo, err
 	}
 	return &ledgerInfo, nil

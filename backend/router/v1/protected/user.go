@@ -7,10 +7,17 @@ import (
 	"github.com/Walker088/rigel_ledger_server/backend/database/dao"
 	"github.com/Walker088/rigel_ledger_server/backend/database/pojo"
 	"github.com/go-chi/chi/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 type UserHandler struct {
 	Dao *dao.UserDao
+}
+
+func NewUserHandler(pool *pgxpool.Pool) *UserHandler {
+	return &UserHandler{
+		Dao: dao.NewUserDao(pool),
+	}
 }
 
 func (u *UserHandler) GetUserCompleteHandler(w http.ResponseWriter, r *http.Request) {

@@ -9,7 +9,6 @@ import (
 
 	"github.com/Walker088/rigel_ledger_server/backend"
 	"github.com/Walker088/rigel_ledger_server/backend/config"
-	"github.com/Walker088/rigel_ledger_server/backend/database/dao"
 	custommdw "github.com/Walker088/rigel_ledger_server/backend/router/middlewares"
 	"github.com/Walker088/rigel_ledger_server/backend/router/v1/protected"
 	"github.com/Walker088/rigel_ledger_server/backend/router/v1/public"
@@ -35,11 +34,22 @@ func (m *Mux) initRoutes(c *config.AppConfig, mw *custommdw.MiddleWares, gctx *b
 	m.Router.Route("/v1/protected/user", func(r chi.Router) {
 		r.Use(mw.ValidateJwt)
 
-		userDao := dao.NewUserDao(gctx.Pool)
-		h := &protected.UserHandler{Dao: userDao}
-		r.Get("/{userId}/basic", h.GetUserBasicHandler)
-		r.Get("/{userId}/complete", h.GetUserCompleteHandler)
+		uh := protected.NewUserHandler(gctx.Pool)
+		r.Get("/{userId}/basic", uh.GetUserBasicHandler)
+		r.Get("/{userId}/complete", uh.GetUserCompleteHandler)
+		r.Patch("/{userId}/update", uh.UpdateUserHandler)
 
+		lh := protected.NewLedgerHandler(gctx.Pool)
+		r.Get("/{userId}/ledgers", lh.GetLedgerLstHandler)
+		r.Get("/{userId}/ledgers/{ledgerId}", lh.GetLedgerHandler)
+		r.Post("/{userId}/ledgers", lh.CreateLedgerHandler)
+		r.Patch("/{userId}/ledgers/{ledgerId}", lh.UpdateLedgerHandler)
+
+		jh := protected.NewLedgerJournalHandler(gctx.Pool)
+		r.Get("/{userId}/journal", jh.GetJournalLstHandler)
+		r.Get("/{userId}/journal/{transacId}", jh.GetJournalHandler)
+		r.Post("/{userId}/journal", jh.CreateJournalHandler)
+		r.Patch("/{userId}/journal/{transacId}", jh.RevertJournalHandler)
 	})
 }
 
