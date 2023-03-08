@@ -21,10 +21,6 @@ func NewUserHandler(pool *pgxpool.Pool) *UserHandler {
 }
 
 func (u *UserHandler) GetUserCompleteHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method == http.MethodOptions {
-		return
-	}
-
 	uid := chi.URLParam(r, "userId")
 	userInfo, err := u.Dao.GetComplete(uid)
 	if err == nil {
@@ -38,10 +34,6 @@ func (u *UserHandler) GetUserCompleteHandler(w http.ResponseWriter, r *http.Requ
 }
 
 func (u *UserHandler) GetUserBasicHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method == http.MethodOptions {
-		return
-	}
-
 	uid := chi.URLParam(r, "userId")
 	if userInfo, err := u.Dao.GetBasic(uid); err == nil {
 		response, _ := json.Marshal(userInfo)

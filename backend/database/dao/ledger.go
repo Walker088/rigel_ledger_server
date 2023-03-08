@@ -2,6 +2,7 @@ package dao
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/Walker088/rigel_ledger_server/backend/database/pojo"
 	"github.com/georgysavva/scany/v2/pgxscan"
@@ -18,8 +19,23 @@ func NewLedgerDao(p *pgxpool.Pool) *LedgerDao {
 	}
 }
 
-func (l *LedgerDao) Get(ledgerId string) (*pojo.LedgerInfo, error) {
+func (l *LedgerDao) checkLedgerOwnership(userId string, ledgerId string) bool {
+	isLedgerOwner := false
+	query := `SELECT ledger_owner = $1 FROM user_ledgers WHERE ledger_id = $2`
+	if err := pgxscan.Get(context.Background(), l.pool, &isLedgerOwner, query, userId, ledgerId); err != nil {
+		return isLedgerOwner
+	}
+	return isLedgerOwner
+}
+
+func (l *LedgerDao) Get(userId string, ledgerId string) (*pojo.LedgerInfo, error) {
 	var ledgerInfo pojo.LedgerInfo
+
+	isLedgerOwner := l.checkLedgerOwnership(userId, ledgerId)
+	if !isLedgerOwner {
+		return &ledgerInfo, fmt.Errorf("user %s is not owner of the ledger %s", userId, ledgerId)
+	}
+
 	queryLedger := `
 	SELECT 
 		l.ledger_id,

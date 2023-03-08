@@ -50,6 +50,12 @@ func (m *Mux) initRoutes(c *config.AppConfig, mw *custommdw.MiddleWares, gctx *b
 		r.Get("/{userId}/journal/{transacId}", jh.GetJournalHandler)
 		r.Post("/{userId}/journal", jh.CreateJournalHandler)
 		r.Patch("/{userId}/journal/{transacId}", jh.RevertJournalHandler)
+
+		rh := protected.NewReportHandler(gctx.Pool)
+		r.Get("/{userId}/report/balancesheet/annual/year/{year}", rh.GetAnnualBalanceSheet)
+		r.Get("/{userId}/report/balancesheet/seasonal/year/{year}/season/{season}", rh.GetSeasonalBalanceSheet)
+		r.Get("/{userId}/report/incomestatement/annual/year/{year}", rh.GetAnnualIncomeStatement)
+		r.Get("/{userId}/report/incomestatement/seasonal/year/{year}/season/{season}", rh.GetSeasonalIncomeStatement)
 	})
 }
 
