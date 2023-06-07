@@ -18,7 +18,7 @@
 <div class="grid-container">
 	<section class="grid-item__login">
 		<h1>{ $LL.home.title() }</h1>
-		<h4 class="fs-6 fw-light mb-4">{ $LL.home.subTitle() }</h4>
+		<h2 class="fs-6 fw-light mb-4">{ $LL.home.subTitle() }</h2>
 		{ #if data.ghOauthUrl }
 		<button type="button" class="btn p-0" on:click={() => {window.location.href = data.ghOauthUrl || ""}}>
 			<div class="d-inline-flex badge bg-secondary fs-5">

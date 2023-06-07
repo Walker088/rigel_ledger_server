@@ -1,6 +1,5 @@
 import { error } from '@sveltejs/kit';
-
-const backendPath = import.meta.env.VITE_BACKEND_URL;
+import { PUBLIC_BACKEND_URL } from '$env/static/public';
 
 /**
  * Send any type of requests, expecting to get json response.
@@ -14,7 +13,7 @@ const send = async (options: RequestInit, path: string, token?: string) => {
 			["Accept-Encoding", "gzip"]
 		];
 	}
-    return fetch(`${backendPath}/${path}`, options)
+    return fetch(`${PUBLIC_BACKEND_URL}/${path}`, options)
 		.then(async res => {
 			if (res?.ok) {
 				const text = await res.text();
