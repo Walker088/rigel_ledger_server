@@ -8,7 +8,7 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/Walker088/rigel_ledger_server/backend/jwt"
+	"github.com/Walker088/rigel_ledger_server/src/golang/jwt"
 	"go.uber.org/zap"
 )
 

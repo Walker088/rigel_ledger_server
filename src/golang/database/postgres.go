@@ -5,7 +5,7 @@ import (
 
 	"github.com/jackc/pgx/v5/pgxpool"
 
-	"github.com/Walker088/rigel_ledger_server/backend/config"
+	"github.com/Walker088/rigel_ledger_server/src/golang/config"
 )
 
 type PgPool struct {

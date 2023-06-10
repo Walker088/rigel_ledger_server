@@ -8,12 +8,12 @@ import (
 	"os/signal"
 	"time"
 
-	"github.com/Walker088/rigel_ledger_server/backend"
-	"github.com/Walker088/rigel_ledger_server/backend/config"
-	"github.com/Walker088/rigel_ledger_server/backend/database"
-	"github.com/Walker088/rigel_ledger_server/backend/jwt"
-	"github.com/Walker088/rigel_ledger_server/backend/logger"
-	"github.com/Walker088/rigel_ledger_server/backend/router"
+	ctx "github.com/Walker088/rigel_ledger_server/src/golang"
+	"github.com/Walker088/rigel_ledger_server/src/golang/config"
+	"github.com/Walker088/rigel_ledger_server/src/golang/database"
+	"github.com/Walker088/rigel_ledger_server/src/golang/jwt"
+	"github.com/Walker088/rigel_ledger_server/src/golang/logger"
+	"github.com/Walker088/rigel_ledger_server/src/golang/router"
 )
 
 func main() {
@@ -28,7 +28,7 @@ func main() {
 	defer pool.ShutDownPool()
 
 	jwt := jwt.New([]byte(c.JwtSecret), l)
-	gctx := backend.New(pool.GetPool(), jwt, l)
+	gctx := ctx.New(pool.GetPool(), jwt, l)
 
 	l.Info("Welcome to RigelLedger")
 	m := router.New(c, gctx)

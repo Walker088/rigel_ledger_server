@@ -9,7 +9,7 @@ import (
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
 
-	"github.com/Walker088/rigel_ledger_server/backend/config"
+	"github.com/Walker088/rigel_ledger_server/src/golang/config"
 )
 
 const (

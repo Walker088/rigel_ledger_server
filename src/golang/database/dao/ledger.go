@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/Walker088/rigel_ledger_server/backend/database/pojo"
+	"github.com/Walker088/rigel_ledger_server/src/golang/database/pojo"
 	"github.com/georgysavva/scany/v2/pgxscan"
 	"github.com/jackc/pgx/v5/pgxpool"
 )

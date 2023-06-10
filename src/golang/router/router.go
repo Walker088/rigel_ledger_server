@@ -7,12 +7,12 @@ import (
 	chimdw "github.com/go-chi/chi/v5/middleware"
 	"go.uber.org/zap"
 
-	"github.com/Walker088/rigel_ledger_server/backend"
-	"github.com/Walker088/rigel_ledger_server/backend/config"
-	custommdw "github.com/Walker088/rigel_ledger_server/backend/router/middlewares"
-	"github.com/Walker088/rigel_ledger_server/backend/router/v1/protected"
-	"github.com/Walker088/rigel_ledger_server/backend/router/v1/public"
-	"github.com/Walker088/rigel_ledger_server/backend/router/v1/public/oauth"
+	backend "github.com/Walker088/rigel_ledger_server/src/golang"
+	"github.com/Walker088/rigel_ledger_server/src/golang/config"
+	custommdw "github.com/Walker088/rigel_ledger_server/src/golang/router/middlewares"
+	"github.com/Walker088/rigel_ledger_server/src/golang/router/v1/protected"
+	"github.com/Walker088/rigel_ledger_server/src/golang/router/v1/public"
+	"github.com/Walker088/rigel_ledger_server/src/golang/router/v1/public/oauth"
 )
 
 type Mux struct {

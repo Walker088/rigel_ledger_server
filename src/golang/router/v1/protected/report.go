@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/Walker088/rigel_ledger_server/backend/database/dao"
+	"github.com/Walker088/rigel_ledger_server/src/golang/database/dao"
 	"github.com/go-chi/chi/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 )

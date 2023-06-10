@@ -1,7 +1,7 @@
 package backend
 
 import (
-	"github.com/Walker088/rigel_ledger_server/backend/jwt"
+	"github.com/Walker088/rigel_ledger_server/src/golang/jwt"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"go.uber.org/zap"
 )
