@@ -8,7 +8,7 @@ import (
 	"os/signal"
 	"time"
 
-	ctx "github.com/Walker088/rigel_ledger_server/src/golang"
+	backend "github.com/Walker088/rigel_ledger_server/src/golang"
 	"github.com/Walker088/rigel_ledger_server/src/golang/config"
 	"github.com/Walker088/rigel_ledger_server/src/golang/database"
 	"github.com/Walker088/rigel_ledger_server/src/golang/jwt"
@@ -28,18 +28,20 @@ func main() {
 	defer pool.ShutDownPool()
 
 	jwt := jwt.New([]byte(c.JwtSecret), l)
-	gctx := ctx.New(pool.GetPool(), jwt, l)
+	gctx := backend.New(pool.GetPool(), jwt, l)
 
 	l.Info("Welcome to RigelLedger")
 	m := router.New(c, gctx)
+	addr := fmt.Sprintf("%s:%s", c.AppHost, c.AppPort)
 	srv := &http.Server{
 		Handler:      m.Router,
-		Addr:         fmt.Sprintf("%s:%s", c.AppHost, c.AppPort),
+		Addr:         addr,
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,
 	}
 	go func() {
-		l.Error(srv.ListenAndServe())
+		l.Infof("Server started at %s", addr)
+		l.Warn(srv.ListenAndServe())
 	}()
 
 	deadlineChannel := make(chan os.Signal, 1)

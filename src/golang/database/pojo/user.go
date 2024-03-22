@@ -4,6 +4,7 @@ import "time"
 
 type UserInfo struct {
 	Id               string        `json:"userId" db:"user_id"`
+	IdGh             string        `json:"userIdGh" db:"user_id_gh"`
 	Name             string        `json:"userName" db:"user_name"`
 	Mail             string        `json:"userMail" db:"user_mail"`
 	TypeCode         uint8         `json:"userTypeCode" db:"user_type_code"`

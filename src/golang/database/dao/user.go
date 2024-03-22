@@ -111,8 +111,7 @@ func (d *UserDao) GetComplete(userId string) (*pojo.UserInfo, error) {
         END ie_monthly_expense,
         x.tx_first_at,
         x.tx_last_at
-    FROM
-        (
+    FROM (
         SELECT
             (
                 SELECT
@@ -264,7 +263,7 @@ func (d *UserDao) Update(userId string, u *pojo.UpdateUserInfo) (*pojo.UpdateUse
         main_language = $5
     WHERE
         user_id = $6
-    RETURNING (user_id, user_name, user_mail, main_country, main_currency, main_language)
+    RETURNING user_id, user_name, user_mail, main_country, main_currency, main_language
     `
 
 	if err := pgxscan.Get(

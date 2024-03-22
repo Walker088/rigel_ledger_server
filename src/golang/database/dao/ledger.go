@@ -102,7 +102,7 @@ func (l *LedgerDao) Create(ledgerInfo []*pojo.LedgerInfo) ([]*pojo.LedgerInfo, e
 	insertLedgerQuery := `
 	INSERT INTO user_ledgers (ledger_id, ledger_owner, ledger_name, ledger_type_id, currency, balance)
 	SELECT
-		CONCAT($1, '_', $3, '_', COUNT(1) + 1,
+		CONCAT($1, '_', $3, '_', COUNT(1) + 1),
 		$1,
 		$2,
 		$3,
@@ -113,14 +113,13 @@ func (l *LedgerDao) Create(ledgerInfo []*pojo.LedgerInfo) ([]*pojo.LedgerInfo, e
 	WHERE
 		ledger_owner = $1
 		AND ledger_type_id = $3
-	RETURNING (
+	RETURNING
 		ledger_id,
 		ledger_owner,
 		ledger_name,
 		ledger_type_id,
 		currency,
 		balance
-	)
 	`
 	tx, err := l.pool.Begin(context.Background())
 	if err != nil {
@@ -159,12 +158,11 @@ func (l *LedgerDao) Update(userId string, ledger *pojo.UpdateLedgerInfo) (*pojo.
 	UPDATE user_ledgers 
 	SET ledger_name = $2, ledger_status = $3, ledger_tags = $4
 	WHERE ledger_id = $1
-	RETURNING (
+	RETURNING
 		ledger_id,
 		ledger_name,
 		ledger_status,
 		ledger_tags
-	)
 	`
 	if err := pgxscan.Get(
 		context.Background(),
