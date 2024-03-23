@@ -1,3 +1,5 @@
+-- +goose Up
+-- +goose StatementBegin
 TRUNCATE ref_languages_iso639_1;
 INSERT INTO ref_languages_iso639_1 (
 	alphabetic_code, language_name, language_name_en
@@ -450,4 +452,12 @@ VALUES
 ('B813', 'B', 'B8', 'B81', 'Depreciation expense', '折舊'),
 ('B814', 'B', 'B8', 'B81', 'Various amortization', '各項耗竭及攤提'),
 ('B818', 'B', 'B8', 'B81', 'Other expense - other items', '其他支出');
+-- +goose StatementEnd
 
+-- +goose Down
+-- +goose StatementBegin
+TRUNCATE ref_languages_iso639_1;
+TRUNCATE ref_ledger_first_grade;
+TRUNCATE ref_ledger_second_grade;
+TRUNCATE ref_ledger_types;
+-- +goose StatementEnd

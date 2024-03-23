@@ -6,6 +6,7 @@
     import Fa from "svelte-fa"
     import { faGlobe } from "@fortawesome/free-solid-svg-icons"
     import "bootstrap/dist/js/bootstrap.bundle.min"
+
     import "../app.scss"
 
     export let data: LayoutData;
@@ -35,16 +36,18 @@
             </div>
             <div class="nav-item d-inline-flex">
                 <Fa color="dodgerblue" class="mt-2 me-2" icon={faGlobe}/>
-                <select 
-                    class="form-select form-select-sm" 
-                    bind:value={selectedLang}
-                    on:change={switchLang} 
-                >
-                    <option value="" selected>...</option>
-                    <option value="en">🇺🇸 English</option>
-                    <option value="zh">🇹🇼 繁體中文</option>
-                    <option value="es">🇵🇾 Castellano</option>
-                </select>
+                <label>
+                    <select 
+                        class="form-select form-select-sm" 
+                        bind:value={selectedLang}
+                        on:change={switchLang} 
+                    >
+                        <option value="" selected>...</option>
+                        <option value="en">🇺🇸 English</option>
+                        <option value="zh">🇹🇼 繁體中文</option>
+                        <option value="es">🇵🇾 Castellano</option>
+                    </select>
+                </label>
             </div>
         </div>
     </nav>

@@ -1,10 +1,12 @@
-CREATE OR REPLACE FUNCTION flush_updated_at_time()   
+-- +goose Up
+-- +goose StatementBegin
+CREATE OR REPLACE FUNCTION flush_updated_at_time()
 RETURNS TRIGGER AS $$
 BEGIN
     NEW.updated_at = now();
-    RETURN NEW;   
+    RETURN NEW;
 END;
-$$ language 'plpgsql';
+$$ LANGUAGE 'plpgsql';
 
 CREATE TABLE IF NOT EXISTS user_info (
 	user_id         TEXT,
@@ -105,3 +107,17 @@ CREATE TRIGGER generated_reports_seasonal_updated_at BEFORE UPDATE ON generated_
 COMMENT ON COLUMN generated_reports_seasonal.report_season IS '1: [jan, mar], 2: [apr, jun], 3: [jul, sep], 4: [oct, dic]';
 COMMENT ON COLUMN generated_reports_seasonal.report_type IS '0: balance_sheet, 1: income_statement, 3: Investment_sheet';
 COMMENT ON COLUMN generated_reports_seasonal.report_content IS 'Applications should implement the corresponding parser for each report type';
+-- +goose StatementEnd
+
+-- +goose Down
+-- +goose StatementBegin
+DROP FUNCTION IF EXISTS flush_updated_at_time() CASCADE;
+DROP TABLE user_info;
+DROP TABLE ref_countries_iso3166_1;
+DROP TABLE ref_currencies_iso4217;
+DROP TABLE ref_languages_iso639_1;
+DROP TABLE ref_exchange_rates;
+DROP TABLE ref_stock_prices;
+DROP TABLE generated_reports_annual;
+DROP TABLE generated_reports_seasonal;
+-- +goose StatementEnd

@@ -1,3 +1,5 @@
+-- +goose Up
+-- +goose StatementBegin
 CREATE TABLE IF NOT EXISTS ref_ledger_types (
 	ledger_type_id VARCHAR(4),
 	first_grade    VARCHAR(1) NOT NULL,
@@ -140,4 +142,18 @@ CREATE TABLE IF NOT EXISTS user_stocks_tw (
 COMMENT ON COLUMN user_stocks_tw.ledger_id IS 'e.g., walker088_1321_02 Capital.TW stock Investment';
 COMMENT ON COLUMN user_stocks_tw.stock_id IS 'e.g., TSMC';
 COMMENT ON COLUMN user_stocks_tw.operation IS '0: buy, 1: sell';
+-- +goose StatementEnd
 
+-- +goose Down
+-- +goose StatementBegin
+DROP TABLE ref_ledger_types;
+DROP TABLE ref_ledger_first_grade;
+DROP TABLE ref_ledger_second_grade;
+DROP TABLE ref_ledger_third_grade;
+DROP TABLE user_ledgers;
+DROP TABLE user_ledger_journal;
+DROP FUNCTION IF EXISTS flush_new_balance_to_user_ledger() CASCADE;
+DROP TABLE user_ledger_transactions;
+DROP TABLE user_stocks_us;
+DROP TABLE user_stocks_tw;
+-- +goose StatementEnd

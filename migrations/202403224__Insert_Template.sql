@@ -1,4 +1,5 @@
-
+-- +goose Up
+-- +goose StatementBegin
 TRUNCATE ref_countries_iso3166_1;
 INSERT INTO ref_countries_iso3166_1 (
 	alphabetic_code_2, alphabetic_code_3, 
@@ -359,4 +360,15 @@ FROM
 	user_ledgers
 WHERE
 	ledger_id = 'walker088_2112_01' OR ledger_id = 'walker088_1113_03';
+-- +goose StatementEnd
 
+-- +goose Down
+-- +goose StatementBegin
+TRUNCATE ref_countries_iso3166_1;
+TRUNCATE ref_currencies_iso4217;
+TRUNCATE user_info;
+TRUNCATE ref_exchange_rates;
+TRUNCATE user_ledgers;
+TRUNCATE user_ledger_journal;
+TRUNCATE user_ledger_transactions;
+-- +goose StatementEnd

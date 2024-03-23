@@ -2,11 +2,16 @@ package main
 
 import (
 	"context"
+	"embed"
 	"fmt"
 	"net/http"
 	"os"
 	"os/signal"
 	"time"
+
+	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/jackc/pgx/v5/stdlib"
+	"github.com/pressly/goose/v3"
 
 	backend "github.com/Walker088/rigel_ledger_server/src/golang"
 	"github.com/Walker088/rigel_ledger_server/src/golang/config"
@@ -15,6 +20,25 @@ import (
 	"github.com/Walker088/rigel_ledger_server/src/golang/logger"
 	"github.com/Walker088/rigel_ledger_server/src/golang/router"
 )
+
+//go:embed migrations/*.sql
+var embedMigrations embed.FS
+
+func migrate(pool *pgxpool.Pool) {
+	goose.SetBaseFS(embedMigrations)
+
+	if err := goose.SetDialect("postgres"); err != nil {
+		panic(err)
+	}
+	db := stdlib.OpenDBFromPool(pool)
+
+	if err := goose.Up(db, "migrations"); err != nil {
+		panic(err)
+	}
+	if err := db.Close(); err != nil {
+		panic(err)
+	}
+}
 
 func main() {
 	c := config.GetAppConfig()
@@ -27,6 +51,7 @@ func main() {
 	}
 	defer pool.ShutDownPool()
 
+	migrate(pool.GetPool())
 	jwt := jwt.New([]byte(c.JwtSecret), l)
 	gctx := backend.New(pool.GetPool(), jwt, l)
 
